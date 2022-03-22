@@ -7,8 +7,25 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="./libs/d3.js"></script>
     <script src="https://d3js.org/topojson.v1.min.js"></script>
-    <title>MA Map</title>
+    <title>Major Assignment2 - part1</title>
     <style>
+        body {
+            font-family: sans-serif;
+        }
+
+        h1, h3 {
+            text-align: center;
+        }
+
+        svg {
+            width: 70vw;
+            height: 70vh;
+            background-color: #f5f5f5;
+            margin: auto;
+            display: block;
+            border: black;
+        }
+
         #tooltip {
             position: absolute;
             opacity: 0;
@@ -37,6 +54,8 @@
 </head>
 
 <body>
+    <h1>Population in Towns of Massachusetts in 1980</h1>
+    <h3>by Abhijot Bedi (01908371)</h3>
     <div id="tooltip"></div>
     <script>
         /*-------------------------------------------------------*/
@@ -56,19 +75,14 @@
 
         // a topojson file containing population of each town in different years
         const MA_counties = "./data/towns.topojson"
-            // gini index per county
-        const gini_index = "./data/gini_index.csv"
 
 
         // open both files
         Promise.all([
-            d3.json(MA_counties),
-            d3.csv(gini_index)
+            d3.json(MA_counties)
         ]).then(data => {
             // topology data
             const topo_data = data[0];
-            // gini index data
-            const csv_data = data[1];
 
             /*-------------------------------------------------------*/
             /*-----------------Topojson data handling----------------*/
@@ -76,7 +90,7 @@
             // if topojson file is imported we need to 
             // convert topology data to geojson 
             const geojson = topojson.feature(topo_data, topo_data.objects.ma);
-
+            console.log(geojson)
             /*-------------------------------------------------------*/
             /*----------------------Projections----------------------*/
             /*-------------------------------------------------------*/
@@ -107,13 +121,13 @@
                 // if the data is scaled using log scale
             let logScale = d3.scaleLog()
                 .domain(d3.extent(geojson.features, (d) => {
-                    return d['properties']['POP2010']
+                    return d['properties']['POP1980']
                 }))
 
             // if the data is scaled using linear scale
             let linearScale = d3.scaleLinear()
                 .domain(d3.extent(geojson.features, (d) => {
-                    return d['properties']['POP2010']
+                    return d['properties']['POP1980']
                 }))
 
             /*-------------------------------------------------------*/
@@ -135,13 +149,14 @@
                 .enter()
                 .append("path")
                 .attr("d", d => geoPath_generator(d))
-                //.attr("fill", d => colorInterpolator(logScale(d['properties']['POP2010'])))
-                .attr("fill", d => colorInterpolator(linearScale(d['properties']['POP2010'])))
+                .attr("fill", d => colorInterpolator(logScale(d['properties']['POP1980'])))
+                //.attr("fill", d => colorInterpolator(linearScale(d['properties']['POP1980'])))
                 .on("mouseenter", (m, d) => {
                     tooltip.transition()
                         .duration(200)
                         .style("opacity", .9)
-                    tooltip.html(d['properties']['TOWN'])
+                    tooltip.html("TOWN: " + d['properties']['TOWN'] +
+                        "<br>" + "POPULATION: " + d['properties']['POP1980'])
                         .style("left", m.clientX + "px")
                         .style("top", m.clientY + "px");
                 })
