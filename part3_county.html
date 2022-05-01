@@ -39,6 +39,20 @@
             border-radius: 2px;
             line-height: 1;
         }
+
+        #right {
+            padding: 10px;
+            text-align: center;
+            background: #f5f5f5;
+            font-family: sans-serif;
+            font-size: medium;
+            border-color: black;
+            border-radius: 2px;
+            line-height: 1;
+            float: right;
+            width: 10cm;
+            margin-right: 1cm;
+        }
         
         path:hover {
             opacity: .6;
@@ -56,6 +70,10 @@
     <h1>Population in Counties of Massachusetts in 2000</h1>
     <h3>by Abhijot Bedi (01908371)</h3>
     <div id="tooltip"></div>
+    <div id="right">
+        <h3>Data Information:</h3>
+        <h6>Hover on the map to view!</h6>
+    </div>
     <script>
         /*-------------------------------------------------------*/
         /*------------------- Window setting --------------------*/
@@ -65,7 +83,7 @@
             width: window.innerWidth,
             height: window.innerHeight
         };
-        const margin = window_dims.width * .2
+        const margin = window_dims.width * .3
 
 
         /*-------------------------------------------------------*/
@@ -139,6 +157,7 @@
             /*---------------------- Tooltip ------------------------*/
             /*-------------------------------------------------------*/
             const tooltip = d3.select("#tooltip");
+            const right = d3.select('#right')
 
             /*--------------------------------------------------------*/
             /*----------------- channelling marks --------------------*/
@@ -168,6 +187,10 @@
                         "<br>" + "POPULATION: " + d['properties']['POP2000'])
                         .style("left", m.clientX + "px")
                         .style("top", m.clientY + "px");
+                    right.html("<h3>" + "Data Information: " + "</h3>" +
+                        "COUNTY ID: " + d["properties"]["FIPS_STCO"] + 
+                        "<br>" + "TOWN: " + d['properties']['TOWN'] +
+                        "<br>" + "POPULATION: " + d['properties']['POP2000']);
                 })
                 .on("mousemove", (m, d) => {
                     tooltip.style("opacity", .9)
